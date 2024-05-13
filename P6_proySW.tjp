@@ -77,6 +77,7 @@ resource dev4 "Alvaro de la Asunción" {
   shifts hours
 }
 
+
 # Now we specify the work packages. The whole project is described as
 # a task that contains subtasks. These subtasks are then broken down
 # into smaller tasks and so on. The innermost tasks describe the real
