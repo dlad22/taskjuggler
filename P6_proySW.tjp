@@ -151,10 +151,6 @@ task WMGame "Web & Mobile Game" {
     }    
   }
 
-
-
-  
-
   task ttest "Accpetance tests" {
       effort 10d
       allocate boss
