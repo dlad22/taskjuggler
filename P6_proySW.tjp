@@ -151,6 +151,33 @@ task WMGame "Web & Mobile Game" {
     }    
   }
 
+  task tmobileF "Mobile Front End" {
+    purge chargeset
+    chargeset mFront
+    responsible dev3
+    depends WMGame.tback.tBEd
+    task tGUId "Mobile GUI Design" {
+      effort 8d
+      actual:effort 12d
+      allocate dev3
+      journalentry 2024-04-11 "Problems with the GUI design tool" {
+        author dev3
+        alert yellow
+        summary "The tool used for the GUI design has given me a lot of problems. I recommend to look for other one."
+      }
+    }
+    task tFEMc "Mobile Front End Construction" {
+      effort 10d
+      allocate dev4, dev3
+      depends WMGame.tmobileF.tGUId
+    }
+    task tFEMt "Mobile Front End Test" {
+      effort 7d
+      allocate dev1
+      depends WMGame.tmobileF.tFEMc
+    }    
+  }
+
   task ttest "Accpetance tests" {
       effort 10d
       allocate boss
