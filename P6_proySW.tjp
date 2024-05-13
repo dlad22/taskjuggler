@@ -179,7 +179,7 @@ task WMGame "Web & Mobile Game" {
     }    
   }
 
-    task tdeploy "Cloud Back End Deployment" {
+  task tdeploy "Cloud Back End Deployment" {
     effort 5d
     allocate dev1
     depends WMGame.tback.tbackDev
@@ -187,7 +187,6 @@ task WMGame "Web & Mobile Game" {
     task tdeployB "Choose Cloud Provider" {
       effort 2d
       allocate dev4
-      depends WMGame.tdeploy
       journalentry 2024-05-13 "Provider chosen" {
         author dev4
         alert green
