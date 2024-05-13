@@ -167,15 +167,15 @@ task WMGame "Web & Mobile Game" {
         summary "The tool used for the GUI design has given me a lot of problems. I recommend to look for other one."
       }
     }
-    task tFEc "Mobile Front End Construction" {
+    task tFEMc "Mobile Front End Construction" {
       effort 10d
       allocate dev4, dev3
       depends WMGame.tmobileF.tGUId
     }
-    task tFEt "Mobile Front End Test" {
+    task tFEMt "Mobile Front End Test" {
       effort 7d
       allocate dev1
-      depends WMGame.tmobileF.tFEc
+      depends WMGame.tmobileF.tFEMc
     }    
   }
 
