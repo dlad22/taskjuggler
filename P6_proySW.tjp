@@ -5,7 +5,7 @@
  * some elements of it
  */
 
-project pSix "Web Game"  2023-03-15 +2.5m {
+project pSix "Web Game"  2024-05-13 +2.5m {
   # Set the default time zone for the project. If not specified, UTC
   # is used.
   timezone "Europe/Paris"
@@ -19,7 +19,7 @@ project pSix "Web Game"  2023-03-15 +2.5m {
   # the project reports. If not specified, the current day will be
   # used, but this will likely be outside of the project range, so it
   # can't be seen in the reports.
-  now 2023-04-15-13:00
+  now 2024-04-15-13:00
   # The currency for all money values is the US Dollar.
   currency "EUR"
 
@@ -30,7 +30,7 @@ project pSix "Web Game"  2023-03-15 +2.5m {
 }
 
 # This is not a real copyright for this file. It's just used as an example.
-copyright "Creative Commons 2023 Proyecto Software - Unizar."
+copyright "Creative Commons 2024 Proyecto Software - Unizar."
 
 # The daily default rate of all resources. This can be overridden for each
 # resource. We specify this, so that we can do a good calculation of
@@ -53,7 +53,7 @@ balance cost rev
 
 resource boss "Liz Bullock" {
   email "iiii@unizar.es"
-  actual:leaves project 2023-05-07 - 2023-05-12
+  actual:leaves project 2024-05-07 - 2024-05-12
   rate 160
 }
 resource dev1 "Paul Smith" {
@@ -62,10 +62,19 @@ resource dev1 "Paul Smith" {
 resource dev2 "Samantha Müller" {
   email "jjj@unizar.es"
   rate 100
-  actual:leaves project 2023-05-07 - 2023-05-12
+  actual:leaves project 2024-05-07 - 2024-05-12
 }
 resource dev3 "Peter Green" {
   email "kkk@unizar.es"
+}
+
+shift hours "9:00 - 13:00" {
+  workinghours mon - fri "9:00 - 13:00"
+}
+
+resource dev4 "Alvaro de la Asunción" {
+  email "798996@unizar.es"
+  shifts hours
 }
 
 # Now we specify the work packages. The whole project is described as
@@ -106,7 +115,7 @@ task WMGame "Web & Mobile Game" {
       actual:effort 11d
       allocate dev1, dev2
       depends WMGame.tback.tBEd
-      journalentry 2023-03-28 "Game logic completed before deadline" {
+      journalentry 2024-03-28 "Game logic completed before deadline" {
         author boss
         alert green
         summary "The team has ended the game logic before deadline."
@@ -128,7 +137,7 @@ task WMGame "Web & Mobile Game" {
       effort 9d
       actual:effort 15d
       allocate dev3
-      journalentry 2023-04-11 "Problems with the GUI design tool" {
+      journalentry 2024-04-11 "Problems with the GUI design tool" {
         author dev3
         alert yellow
         summary "The tool used for the GUI design has given me a lot of problems. I recommend to look for other one."
@@ -146,18 +155,77 @@ task WMGame "Web & Mobile Game" {
     }    
   }
 
+  task twebF "Mobile Front End" {
+    purge chargeset
+    chargeset mFront
+    responsible dev3
+    depends WMGame.tback.tBEd
+    task tGUId "Mobile GUI Design" {
+      effort 8d
+      actual:effort 12d
+      allocate dev3
+      journalentry 2024-04-11 "Problems with the GUI design tool" {
+        author dev3
+        alert yellow
+        summary "The tool used for the GUI design has given me a lot of problems. I recommend to look for other one."
+      }
+    }
+    task tFEc "Mobile Front End Construction" {
+      effort 10d
+      allocate dev4, dev3
+      depends WMGame.tmobileF.tGUId
+    }
+    task tFEt "Mobile Front End Test" {
+      effort 7d
+      allocate dev1
+      depends WMGame.tmobileF.tFEc
+    }    
+  }
+
+  task tdeploy "Cloud Back End Deployment" {
+    effort 5d
+    allocate dev1
+    depends WMGame.tback.tbackDev
+
+    task tdeployB "Choose Cloud Provider" {
+      effort 2d
+      allocate dev4
+      depends WMGame.tdeploy
+      journalentry 2024-05-13 "Provider chosen" {
+        author dev4
+        alert green
+        summary "The team has chosen the cloud provider."
+      }
+    }
+
+    task tdeployC "Cloud Configuration" {
+      effort 3d
+      allocate dev4
+      depends WMGame.tdeploy.tdeployB
+    }
+
+    task tdeployD "Cloud Deployment" {
+      effort 2d
+      allocate dev4
+      depends WMGame.tdeploy.tdeployC
+    }
+
+  }
+
   task ttest "Accpetance tests" {
+      start 2024-06-01
       effort 10d
       allocate boss
       allocate dev2
       actual:effort 15d
-      journalentry 2023-04-13 "Problems with the planned dates" {
+      journalentry 2024-05-13 "Problems with the planned dates" {
         author boss
         alert red
         summary "The whole team asiigned to this task has a trip to visit a new client from May 7th to May 12th. Needed to check if the project can be finished on time or it is necessary to reasign efforts."
       }
       depends WMGame.twebF
       depends WMGame.tback
+    
   }
 
     
@@ -228,6 +296,12 @@ textreport frame "" {
     center '<[report id="overview"]>'
   }
 
+  textreport overvi "Initial Plan" {
+    formats html
+    center '<[report id="initplan"]>'
+  }
+
+
   textreport "Status" {
     formats html
     center -8<-
@@ -261,6 +335,22 @@ textreport frame "" {
 # A traditional Gantt chart with a project overview.
 taskreport overview "" {
   scenarios actual
+  headline "Current Project Plan"
+  columns bsi { title 'WBS' },
+          name, start, end, effort, cost,
+          revenue, chart { ${TaskTip} }
+  # For this report we like to have the abbreviated weekday in front
+  # of the date. %a is the tag for this.
+  timeformat "%a %Y-%m-%d"
+  loadunit days
+  hideresource @all
+  balance cost rev
+  caption 'All effort values are in man days.'
+}
+
+# A traditional Gantt chart with a project overview.
+taskreport initplan "" {
+  scenarios plan
   headline "Current Project Plan"
   columns bsi { title 'WBS' },
           name, start, end, effort, cost,
